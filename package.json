@@ -1,21 +1,74 @@
 {
-  "name": "my-electron-app",
+  "name": "gestion-de-emplyes",
   "version": "0.1.0",
   "private": true,
+  "main": "electron.js",
+  "description": "this is a electron app for managing employees",
+  "author": "hamza hassani",
   "dependencies": {
+    "@prisma/client": "^5.8.1",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
+    "axios": "^1.6.6",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.1",
+    "electron-is-dev": "^3.0.1",
+    "express": "^4.18.2",
+    "express-validator": "^7.0.1",
     "react": "^18.2.0",
+    "react-data-table-component": "^7.6.2",
     "react-dom": "^18.2.0",
+    "react-icons": "^5.0.1",
+    "react-multistep": "^5.5.9",
     "react-scripts": "5.0.1",
+    "react-toastify": "^10.0.4",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "start": "concurrently \"npm run electron\" \"npm run start-server\" \"react-scripts start ",
+    "electron": "electron main.js",
+    "dev": "concurrently \"npm start\" \"npm run electron\"",
+    "build": "react-scripts build && electron-builder",
+    "start-server": "nodemon server/server.js"
+  },
+  "build": {
+    "appId": "com.hamzahassani.gestion-de-emplyes",
+    "productName": "gestion-de-emplyes",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "build/**/*",
+      "node_modules/**/*"
+    ],
+    "extraFiles": [
+      {
+        "from": "main.js",
+        "to": "build/electron.js"
+      }
+    ],
+    "dmg": {
+      "contents": [
+        {
+          "x": 410,
+          "y": 150,
+          "type": "link",
+          "path": "/Applications"
+        },
+        {
+          "x": 130,
+          "y": 150,
+          "type": "file"
+        }
+      ]
+    },
+    "mac": {
+      "icon": "build/icon.icns"
+    },
+    "win": {
+      "icon": "build/icon.ico"
+    }
   },
   "eslintConfig": {
     "extends": [
@@ -34,5 +87,15 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "daisyui": "^4.6.0",
+    "electron": "^15.5.7",
+    "electron-builder": "^24.9.1",
+    "nodemon": "^3.0.3",
+    "prisma": "^5.8.1",
+    "react-router-dom": "^6.21.3",
+    "tailwindcss": "^3.4.1"
   }
 }
