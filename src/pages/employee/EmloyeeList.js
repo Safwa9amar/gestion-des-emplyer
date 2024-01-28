@@ -12,7 +12,11 @@ export default function EmloyeeList() {
   const [filtredEmployees, setFiltredEmployees] = useState([]);
 
   useEffect(() => {
-    fetch(`${process.env.REACT_APP_SERVER_URL}/api/employees`)
+    fetch(`${process.env.REACT_APP_SERVER_URL}/api/employees`, {
+      headers: {
+        Authorization: `${localStorage.getItem("token")}`,
+      },
+    })
       .then((res) => res.json())
       .then((data) => {
         setEmployees(data.employees);
@@ -44,7 +48,7 @@ export default function EmloyeeList() {
 
   return (
     <PageContainer>
-      <div className="flex flex-col gap-5  mx-10">
+      <div className="flex flex-col gap-5 md:w-full  mx-10">
         <DataTable
           title={
             <div className="flex flex-row justify-between p-4 ">
