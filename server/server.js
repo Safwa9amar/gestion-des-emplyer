@@ -1,6 +1,7 @@
 // src/server/app.js
 const express = require("express");
 var cors = require("cors");
+const authenticate = require("./middleware/authMiddleware");
 
 // const startExpressServer = () => {
 const app = express();
@@ -16,8 +17,15 @@ app.use(express.json()); // Example middleware for JSON parsing
 
 // Routes setup
 const apiRoutes = require("./routes/apiRoutes");
-app.use("/api", apiRoutes);
+app.use("/api", authenticate, apiRoutes);
 
+//  Auth routes
+const authRoutes = require("./routes/authRoutes");
+app.use("/auth", authRoutes);
+// check if user is authenticated
+app.get("/check_auth", authenticate, (req, res) => {
+  res.status(200).json({ message: "Authenticated" });
+});
 const server = app.listen(port, () => {
   console.log(`Express server is running at http://localhost:${port}`);
 });

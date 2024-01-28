@@ -1,11 +1,13 @@
 import React from "react";
 import logo from "../assests/images/logo.png";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { IoHomeOutline, IoPeopleCircleOutline } from "react-icons/io5";
 import { BsPeople } from "react-icons/bs";
 import { FaChartPie } from "react-icons/fa";
+import { useAuth } from "../context/AuthContext";
 
 export default function NavBare() {
+  const { logout } = useAuth();
   return (
     <div className="navbar bg-base-100 ">
       <div className="flex-1 gap-6 items-center">
@@ -25,7 +27,13 @@ export default function NavBare() {
               <a>الضبط والاعدادات</a>
             </li>
             <li>
-              <Link to="/login">تسجيل الخروج</Link>
+              <Link
+                onClick={() => {
+                  logout();
+                }}
+              >
+                تسجيل الخروج
+              </Link>
             </li>
           </ul>
         </div>

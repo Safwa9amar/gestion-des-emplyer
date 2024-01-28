@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import PageContainer from "../components/PageContainer";
-
+import login_bg from "../assests/images/login_bg.jpg";
 const LoginForm = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -37,7 +37,7 @@ const LoginForm = () => {
     try {
       // Simulate authentication with JSONPlaceholder API
       const response = await axios.post(
-        "https://jsonplaceholder.typicode.com/posts",
+        `${process.env.REACT_APP_SERVER_URL}/auth/login`,
         {
           email,
           password,
@@ -62,7 +62,14 @@ const LoginForm = () => {
 
   return (
     <PageContainer>
-      <div className="w-screen h-screen flex justify-center items-center bg-slate-400">
+      <div
+        style={{
+          backgroundImage: `url(${login_bg})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }}
+        className="w-screen h-screen flex justify-center items-center "
+      >
         <div className="bg-white p-8 rounded shadow-md max-w-md w-full">
           <h2 className="text-2xl font-semibold mb-6 text-center">Login</h2>
           <form onSubmit={handleLogin}>
