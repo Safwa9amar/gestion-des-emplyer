@@ -46,3 +46,15 @@ model Employee {
 
   // Relationships or additional configurations can be added here
 }
+
+// prisma/schema.prisma
+
+model User {
+  id       Int    @id @default(autoincrement())
+  fullName String
+  username String @unique
+  password String
+  email    String @unique
+  phone    String @unique
+  role     String
+}
