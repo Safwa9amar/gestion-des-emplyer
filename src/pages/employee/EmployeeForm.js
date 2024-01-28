@@ -178,6 +178,7 @@ const EmployeeForm = () => {
         headers: {
           "Content-Type": "application/json",
           Accept: "application/json",
+          Authorization: `${localStorage.getItem("token")}`,
         },
         body: JSON.stringify(formData),
       })
