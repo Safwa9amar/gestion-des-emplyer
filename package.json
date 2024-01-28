@@ -23,6 +23,7 @@
     "react-multistep": "^5.5.9",
     "react-scripts": "5.0.1",
     "react-toastify": "^10.0.4",
+    "sqlite": "^5.1.1",
     "web-vitals": "^2.1.4"
   },
   "scripts": {

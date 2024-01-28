@@ -44,7 +44,7 @@ export default function EmloyeeList() {
 
   return (
     <PageContainer>
-      <div className="flex flex-col gap-5  mx-10">
+      <div className="flex flex-col gap-5 md:w-11/12 mx-10">
         <DataTable
           title={
             <div className="flex flex-row justify-between p-4 ">

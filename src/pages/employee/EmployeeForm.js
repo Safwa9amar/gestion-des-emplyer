@@ -10,45 +10,49 @@ import { FcNext, FcPrevious } from "react-icons/fc";
 import { toast } from "react-toastify";
 import { useLocation } from "react-router-dom";
 
-const EmployeeForm = ({}) => {
+const EmployeeForm = () => {
   // chek if the form is for edit or add new employee
   const navigation = useLocation();
-  const EmployeeId = navigation.search.split("=")[1];
+  const EmployeeId = parseInt(navigation.search.split("=")[1]);
   console.log(EmployeeId);
   const [edit, setEdit] = useState(false);
   useEffect(() => {
     if (EmployeeId) {
       setEdit(true);
-      fetch(`${process.env.REACT_APP_SERVER_URL}/api/employees/${EmployeeId}`)
-        .then((res) => res.json())
-        .then((data) => {
-          console.log(data);
-          setPersonalInfo({
-            firstName: data.employee.firstName,
-            lastName: data.employee.lastName,
-            email: data.employee.email,
-            phone: data.employee.phone,
-            birthDate: data.employee.birthDate,
-            gender: data.employee.gender,
-            address: data.employee.address,
+      try {
+        fetch(`${process.env.REACT_APP_SERVER_URL}/api/employees/${EmployeeId}`)
+          .then((res) => res.json())
+          .then((data) => {
+            console.log(data);
+            setPersonalInfo({
+              firstName: data.employee.firstName,
+              lastName: data.employee.lastName,
+              email: data.employee.email,
+              phone: data.employee.phone,
+              birthDate: data.employee.birthDate,
+              gender: data.employee.gender,
+              address: data.employee.address,
+            });
+            setSocialInfo({
+              maritalStatus: data.employee.maritalStatus,
+              childrenCount: data.employee.childrenCount,
+            });
+            setAdministrativeInfo({
+              jobTitle: data.employee.jobTitle,
+              hireDate: data.employee.hireDate,
+              department: data.employee.department,
+              position: data.employee.position,
+            });
+            setSalaryInfo({
+              baseSalary: data.employee.baseSalary,
+              bonuses: data.employee.bonuses,
+              allowances: data.employee.allowances,
+              deductions: data.employee.deductions,
+            });
           });
-          setSocialInfo({
-            maritalStatus: data.employee.maritalStatus,
-            childrenCount: data.employee.childrenCount,
-          });
-          setAdministrativeInfo({
-            jobTitle: data.employee.jobTitle,
-            hireDate: data.employee.hireDate,
-            department: data.employee.department,
-            position: data.employee.position,
-          });
-          setSalaryInfo({
-            baseSalary: data.employee.baseSalary,
-            bonuses: data.employee.bonuses,
-            allowances: data.employee.allowances,
-            deductions: data.employee.deductions,
-          });
-        });
+      } catch (error) {
+        console.log(error);
+      }
     }
   }, [EmployeeId]);
 
@@ -167,6 +171,42 @@ const EmployeeForm = ({}) => {
       ...salaryInfo,
       ...compensationInfo,
     };
+    // check if the form is for edit or add new employee
+    if (edit) {
+      fetch(`${process.env.REACT_APP_SERVER_URL}/api/employees/${EmployeeId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify(formData),
+      })
+        .then(async (res) => {
+          const data = await res.json();
+          console.log(data.error);
+          toast.promise(
+            new Promise((resolve, reject) => {
+              if (res.ok) {
+                resolve(data);
+              } else {
+                reject(data);
+              }
+            }),
+            {
+              pending: "جاري الإرسال...",
+              success: "تم إرسال البيانات بنجاح",
+              error:
+                typeof data.error === "object" ? data.error[0].msg : data.error,
+            }
+          );
+        })
+        .catch((err) => {
+          console.log(err);
+          toast.error(err.message);
+        });
+      return;
+    }
+
     fetch(`${process.env.REACT_APP_SERVER_URL}/api/add_employees`, {
       method: "POST",
       headers: {
@@ -202,13 +242,17 @@ const EmployeeForm = ({}) => {
 
   return (
     <form
-      onSubmit={handleSubmit}
+      onSubmit={(e) => e.preventDefault()}
       className="p-4 bg-white shadow-md rounded-md w-full mx-20 mb-10"
     >
       <div className="flex justify-between">
         <h1 className="text-2xl font-bold mb-4">نموذج معلومات الموظف</h1>
         {/* زر الإرسال */}
-        <button type="submit" className="btn btn-outline btn-accent  ">
+        <button
+          onClick={handleSubmit}
+          type="submit"
+          className="btn btn-outline btn-accent  "
+        >
           <FaRegSave className="inline-block mr-2" />
           حفظ
         </button>
