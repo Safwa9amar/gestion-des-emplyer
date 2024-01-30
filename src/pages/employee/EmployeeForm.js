@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import MultiStep from "react-multistep";
 import StepOne from "./formSteps/StepOne";
 import StepTwo from "./formSteps/StepTwo";
@@ -9,21 +9,36 @@ import { FaRegSave } from "react-icons/fa";
 import { FcNext, FcPrevious } from "react-icons/fc";
 import { toast } from "react-toastify";
 import { useLocation } from "react-router-dom";
-
-const EmployeeForm = () => {
+import ImageUpload from "./formSteps/FinalStep";
+const EmployeeForm = ({ edit }) => {
   // chek if the form is for edit or add new employee
   const navigation = useLocation();
-  const EmployeeId = parseInt(navigation.search.split("=")[1]);
+  const EmployeeId = navigation.pathname.split("/")[2];
   console.log(EmployeeId);
-  const [edit, setEdit] = useState(false);
+  const formRef = useRef(null);
+
+  // const [edit, setEdit] = useState(false);
   useEffect(() => {
-    if (EmployeeId) {
-      setEdit(true);
+    if (edit) {
+      // setEdit(true);
       try {
-        fetch(`${process.env.REACT_APP_SERVER_URL}/api/employees/${EmployeeId}`)
+        fetch(
+          `${process.env.REACT_APP_SERVER_URL}/api/employees/${EmployeeId}`,
+
+          {
+            headers: {
+              Authorization: `${localStorage.getItem("token")}`,
+            },
+          }
+        )
           .then((res) => res.json())
           .then((data) => {
             console.log(data);
+            if (data.employee === null) {
+              // set error page
+              navigation.pathname = "/error";
+              return;
+            }
             setPersonalInfo({
               firstName: data.employee.firstName,
               lastName: data.employee.lastName,
@@ -158,6 +173,15 @@ const EmployeeForm = () => {
         />
       ),
     },
+    {
+      component: (
+        <ImageUpload
+          setActiveStep={setActiveStep}
+          salaryInfo={salaryInfo}
+          handleSalaryInfoChange={handleSalaryInfoChange}
+        />
+      ),
+    },
   ];
   // console.log(process.env.REACT_APP_SERVER_URL);
 
@@ -213,6 +237,7 @@ const EmployeeForm = () => {
       headers: {
         "Content-Type": "application/json",
         Accept: "application/json",
+        Authorization: `${localStorage.getItem("token")}`,
       },
       body: JSON.stringify(formData),
     })
@@ -238,13 +263,16 @@ const EmployeeForm = () => {
       .catch((err) => {
         console.log(err);
         toast.error(err.message);
+      })
+      .finally(() => {
+        formRef.current.reset();
       });
   };
-
   return (
     <form
+      ref={formRef}
       onSubmit={(e) => e.preventDefault()}
-      className="p-4 bg-white shadow-md rounded-md w-full mx-20 mb-10"
+      className="p-4 bg-white shadow-md rounded-md w-full mx-20 mb-10 mt-32"
     >
       <div className="flex justify-between">
         <h1 className="text-2xl font-bold mb-4">نموذج معلومات الموظف</h1>

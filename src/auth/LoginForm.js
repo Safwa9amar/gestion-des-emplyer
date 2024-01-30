@@ -8,6 +8,7 @@ import login_bg from "../assests/images/login_bg.jpg";
 const LoginForm = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [remember, setRemember] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -41,6 +42,7 @@ const LoginForm = () => {
         {
           email,
           password,
+          rememberMe: remember,
         }
       );
 
@@ -49,6 +51,9 @@ const LoginForm = () => {
 
       // Store the token in localStorage (you might want to use more secure storage)
       localStorage.setItem("token", token);
+      // set cookie
+
+      document.cookie = `token=${token}; path=/; max-age=${3600}`;
 
       // Redirect to the home page on successful login
       navigate("/");
@@ -68,17 +73,19 @@ const LoginForm = () => {
           backgroundSize: "cover",
           backgroundPosition: "center",
         }}
-        className="w-screen h-screen flex justify-center items-center "
+        className="w-screen h-screen overflow-hidden flex justify-center items-center "
       >
         <div className="bg-white p-8 rounded shadow-md max-w-md w-full">
-          <h2 className="text-2xl font-semibold mb-6 text-center">Login</h2>
+          <h2 className="text-2xl font-semibold mb-6 text-center">
+            تسجيل الدخول
+          </h2>
           <form onSubmit={handleLogin}>
             <div className="mb-4">
               <label
                 htmlFor="email"
                 className="block text-sm font-medium text-gray-600"
               >
-                Email
+                اسم المستخدم أو البريد الإلكتروني
               </label>
               <input
                 type="email"
@@ -95,7 +102,7 @@ const LoginForm = () => {
                 htmlFor="password"
                 className="block text-sm font-medium text-gray-600"
               >
-                Password
+                كلمة السر
               </label>
               <input
                 type="password"
@@ -106,6 +113,19 @@ const LoginForm = () => {
                 className="mt-1 p-2 w-full border rounded-md"
                 placeholder="Enter your password"
               />
+            </div>
+            {/* remember password */}
+            <div className="mb-4 flex gap-2 items-center">
+              <input
+                type="checkbox"
+                id="remember"
+                name="remember"
+                className="mr-2"
+                onChange={(e) => setRemember(e.target.checked)}
+              />
+              <label htmlFor="remember" className="text-gray-600">
+                تذكرني
+              </label>
             </div>
             {error && <p className="text-red-500 mb-4">{error}</p>}
             <button

@@ -103,4 +103,23 @@ router.put("/employees/:id", async (req, res) => {
       .json({ error: "حدث خطأ ما يرجى تحديث الصفحة واعادة المحاولة" });
   }
 });
+
+// delete employee by id
+router.delete("/employees/:id", async (req, res) => {
+  try {
+    // Use Prisma Client to get all employees
+    const employee = await prisma.employee.delete({
+      where: {
+        id: Number(req.params.id),
+      },
+    });
+    // Respond with the retrieved employees
+    res.status(200).json({ employee });
+  } catch (error) {
+    console.error("Error getting employees:", error);
+    res
+      .status(500)
+      .json({ error: "حدث خطأ ما يرجى تحديث الصفحة واعادة المحاولة" });
+  }
+});
 module.exports = router;

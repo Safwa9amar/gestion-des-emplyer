@@ -1,11 +1,14 @@
 // Spinner.js
-import React from "react";
+import React, { useEffect } from "react";
 
 const Spinner = () => {
   return (
-    <div className="flex items-center justify-center h-screen bg-gray-100 absolute inset-0 z-[1111] overflow-hidden">
-      <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-blue-500"></div>
-    </div>
+    <div
+      className="absolute bottom-0 left-1/2 -translate-x-1/2 border-red-500 border-2
+      transition-all duration-500 ease-in-out
+      animate-expendWidth
+      "
+    ></div>
   );
 };
 

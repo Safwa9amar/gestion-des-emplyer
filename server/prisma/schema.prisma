@@ -23,7 +23,7 @@ model Employee {
   birthDate     String
   hireDate      String
   maritalStatus String
-  socialStatus  String
+  // socialStatus  String
   address       String
   jobTitle      String
   jobLevel      String
@@ -56,5 +56,6 @@ model User {
   password String
   email    String @unique
   phone    String @unique
+  picture  String @default("profileHolder.jpg")
   role     String
 }

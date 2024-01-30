@@ -6,48 +6,54 @@ import { CiEdit } from "react-icons/ci";
 import { GrPowerReset } from "react-icons/gr";
 import { toast } from "react-toastify";
 import { Link } from "react-router-dom";
+import { faker } from "@faker-js/faker";
 
-export default function EmloyeeList() {
-  const [employees, setEmployees] = useState([]);
-  const [filtredEmployees, setFiltredEmployees] = useState([]);
+export default function UsersList() {
+  const fakeData = Array.from({ length: 100 }, () => ({
+    id: faker.datatype.uuid(),
+    firstName: faker.person.firstName(),
+    lastName: faker.person.lastName(),
+    email: faker.internet.email(),
+    phone: faker.finance.amount(),
+    role: faker.person.jobTitle(),
+  }));
+  const [User, setUser] = useState([]);
+  const [filtredUser, setFiltredUser] = useState(fakeData);
 
   useEffect(() => {
-    fetch(`${process.env.REACT_APP_SERVER_URL}/api/employees`, {
+    fetch(`${process.env.REACT_APP_SERVER_URL}/auth/users`, {
       headers: {
         Authorization: `${localStorage.getItem("token")}`,
       },
     })
       .then((res) => res.json())
       .then((data) => {
-        setEmployees(data.employees);
-        setFiltredEmployees(data.employees);
+        setUser(data.users);
+        setFiltredUser(data.users);
       });
-    console.log();
   }, []);
 
   const filterData = (e) => {
     const value = e.target.value.toLowerCase();
-    const filter = filtredEmployees.filter((employee) => {
+    const filter = filtredUser.filter((user) => {
       return (
-        employee.firstName.toLowerCase().includes(value) ||
-        employee.lastName.toLowerCase().includes(value) ||
-        employee.email.toLowerCase().includes(value) ||
-        employee.phone.toLowerCase().includes(value) ||
-        employee.jobTitle.toLowerCase().includes(value) ||
-        employee.department.toLowerCase().includes(value) ||
-        employee.jobLevel.toLowerCase().includes(value)
+        user.firstName.toLowerCase().includes(value) ||
+        user.lastName.toLowerCase().includes(value) ||
+        user.email.toLowerCase().includes(value) ||
+        user.phone.toLowerCase().includes(value) ||
+        user.role.toLowerCase().includes(value)
       );
     });
-    setFiltredEmployees(filter);
-    e.target.value === "" && setFiltredEmployees(employees);
+    setFiltredUser(filter);
+    e.target.value === "" && setFiltredUser(User);
   };
   const resetFilter = () => {
-    setFiltredEmployees(employees);
+    setFiltredUser(User);
     toast.success("تم إعادة تعيين الفلترة");
   };
   // delete row from table
   const handleDelete = (id) => {
-    fetch(`${process.env.REACT_APP_SERVER_URL}/api/employees/${id}`, {
+    fetch(`${process.env.REACT_APP_SERVER_URL}/api/User/${id}`, {
       method: "DELETE",
       headers: {
         Authorization: `${localStorage.getItem("token")}`,
@@ -58,10 +64,8 @@ export default function EmloyeeList() {
         if (confirm) {
           toast.success("تم حذف الموظف بنجاح");
         }
-        setEmployees(employees.filter((employee) => employee.id !== id));
-        setFiltredEmployees(
-          filtredEmployees.filter((employee) => employee.id !== id)
-        );
+        setUser(User.filter((user) => user.id !== id));
+        setFiltredUser(filtredUser.filter((user) => user.id !== id));
       } else {
         toast.error("حدث خطأ ما");
       }
@@ -75,12 +79,12 @@ export default function EmloyeeList() {
           title={
             <div className="flex flex-row justify-between p-4 ">
               <h1 className="text-3xl font-bold text-gray-800">
-                قائمة الموظفين
+                قائمة المستخدمين
               </h1>
               <div className="flex items-center gap-4">
                 <input
                   type="text"
-                  placeholder="ابحث عن موظف"
+                  placeholder="ابحث عن مستخدم"
                   className="text-sm p-2 border border-gray-500 rounded-md"
                   onChange={filterData}
                 />
@@ -94,39 +98,27 @@ export default function EmloyeeList() {
           columns={[
             {
               name: "الاسم",
-              selector: (row) => row.firstName + " " + row.lastName,
+              selector: (row) => row.fullName,
               sortable: true,
-              width: "15%",
+              // width: "15%",
             },
             {
               name: "البريد الالكتروني",
               selector: (row) => row.email,
               sortable: true,
-              width: "15%",
+              // width: "15%",
             },
             {
               name: "رقم الهاتف",
               selector: (row) => row.phone,
               sortable: true,
-              width: "15%",
+              // width: "15%",
             },
             {
-              name: "الوظيفة",
-              selector: (row) => row.jobTitle,
+              name: "الدور",
+              selector: (row) => row.role,
               sortable: true,
-              width: "15%",
-            },
-            {
-              name: "القسم",
-              selector: (row) => row.department,
-              sortable: true,
-              width: "15%",
-            },
-            {
-              name: "المستوى الوظيفي",
-              selector: (row) => row.jobLevel,
-              sortable: true,
-              width: "15%",
+              // width: "15%",
             },
             // options
             {
@@ -144,9 +136,9 @@ export default function EmloyeeList() {
               ),
             },
           ]}
-          data={filtredEmployees?.map((employee) => ({
-            ...employee,
-            id: employee.id,
+          data={filtredUser?.map((user) => ({
+            ...user,
+            id: user.id,
           }))}
           pagination={true}
           paginationPerPage={10}

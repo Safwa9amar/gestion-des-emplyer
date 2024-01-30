@@ -1,63 +1,34 @@
+// App.js
+import "./App.css";
 import React, { useEffect } from "react";
-import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
-import LoginForm from "./auth/LoginForm";
-import Home from "./pages/Home";
+import { Routes, Route, useLocation } from "react-router-dom";
 import NavBare from "./components/NavBare";
-import AddEmployee from "./pages/employee/AddEmployee";
-import NotFound from "./pages/NotFound";
 import Spinner from "./components/Spinner";
 import { ToastContainer } from "react-toastify";
-import EmloyeeList from "./pages/employee/EmloyeeList";
 import { useAuth } from "./context/AuthContext";
-
-const routes = [
-  {
-    path: "/",
-    element: <Home />,
-  },
-  {
-    path: "/login",
-    element: <LoginForm />,
-  },
-  {
-    path: "*",
-    element: <NotFound />,
-  },
-  {
-    path: "/Add",
-    element: <AddEmployee />,
-  },
-  {
-    path: "/list",
-    element: <EmloyeeList />,
-  },
-];
+import "react-toastify/dist/ReactToastify.css";
+import routes from "./navigation/routes";
 
 const App = () => {
-  const { loading, setLoading } = useAuth();
   const location = useLocation();
-  useEffect(() => {
-    setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-    }, 1000);
-  }, [location]);
+
   return (
-    <div className="flex flex-col ">
+    <div className="flex flex-col">
       <ToastContainer
         position="bottom-left"
-        autoClose={3000}
+        autoClose={2000}
         newestOnTop={false}
         closeOnClick={true}
         draggable={true}
         pauseOnHover={true}
+        limit={3}
       />
 
-      {loading && <Spinner />}
+      {/* {loading && <Spinner />} */}
       {!location.pathname.includes("/login") && <NavBare />}
       <Routes>
         {routes.map((route, index) => (
-          <Route key={index} path={route.path} element={route.element}></Route>
+          <Route key={index} path={route.path} element={route.element} />
         ))}
       </Routes>
     </div>

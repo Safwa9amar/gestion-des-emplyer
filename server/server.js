@@ -2,7 +2,11 @@
 const express = require("express");
 var cors = require("cors");
 const authenticate = require("./middleware/authMiddleware");
+const jwt = require("jsonwebtoken");
+const { PrismaClient } = require("@prisma/client");
+const prisma = new PrismaClient();
 
+const secretKey = process.env.SECRET_KEY;
 // const startExpressServer = () => {
 const app = express();
 const port = 3001;
@@ -23,8 +27,16 @@ app.use("/api", authenticate, apiRoutes);
 const authRoutes = require("./routes/authRoutes");
 app.use("/auth", authRoutes);
 // check if user is authenticated
-app.get("/check_auth", authenticate, (req, res) => {
-  res.status(200).json({ message: "Authenticated" });
+app.get("/check_auth", authenticate, async (req, res) => {
+  const decodedToken = jwt.verify(req.headers.authorization, secretKey);
+  const user = await prisma.user.findUnique({
+    where: {
+      email: decodedToken.email,
+    },
+  });
+  // remove password from user object
+  delete user.password;
+  res.status(200).json({ user });
 });
 const server = app.listen(port, () => {
   console.log(`Express server is running at http://localhost:${port}`);

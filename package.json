@@ -92,6 +92,7 @@
     ]
   },
   "devDependencies": {
+    "@faker-js/faker": "^8.4.0",
     "concurrently": "^8.2.2",
     "daisyui": "^4.6.0",
     "electron": "^15.5.7",

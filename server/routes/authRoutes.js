@@ -8,17 +8,28 @@ const prisma = new PrismaClient();
 const secretKey = process.env.SECRET_KEY;
 
 // Mock database or use a database like MongoDB to store user information
-router.post("/register", async (req, res) => {
-  const { fullName, username, password, email, phone, role } = req.body;
+router.post("/add-user", async (req, res) => {
+  const { role, password, phone, firstName, email, lastName } = req.body;
+  // check if user already exists
+  const userExists = await prisma.user.findUnique({
+    where: {
+      email: email,
+    },
+  });
+  if (userExists) {
+    return res.status(400).json({ message: "User already exists" });
+  }
+  // hash password
+
   const hashedPassword = await bcrypt.hash(password, 10);
   const user = await prisma.user.create({
     data: {
-      fullName: "hassani hamza",
-      username: "astro0123",
+      fullName: firstName + " " + lastName,
+      username: firstName + "_" + lastName,
+      role,
       password: hashedPassword,
+      phone,
       email,
-      phone: "0666666666",
-      role: "admin",
     },
   });
   console.log(user);
@@ -27,7 +38,7 @@ router.post("/register", async (req, res) => {
 });
 
 router.post("/login", async (req, res) => {
-  const { email, password } = req.body;
+  const { email, password, rememberMe } = req.body;
   const user = await prisma.user.findUnique({
     where: {
       email: email,
@@ -35,10 +46,49 @@ router.post("/login", async (req, res) => {
   });
 
   if (user && (await bcrypt.compare(password, user.password))) {
-    const token = jwt.sign({ email }, secretKey, { expiresIn: "1h" });
+    const token = jwt.sign({ email }, secretKey, {
+      expiresIn: rememberMe ? "7d" : "1h",
+    });
     res.status(200).json({ token });
   } else {
-    res.status(401).json({ message: "Invalid credentials" });
+    res
+      .status(401)
+      .json({ message: "خطأ في البريد الإلكتروني أو كلمة المرور" });
+  }
+});
+
+// update user
+router.put("/users/:id", async (req, res) => {
+  console.log(req.body);
+  try {
+    // Use Prisma Client to get all employees
+    const user = await prisma.user.update({
+      where: {
+        id: Number(req.params.id),
+      },
+      data: req.body,
+    });
+    // Respond with the retrieved employees
+    res.status(200).json({ user });
+  } catch (error) {
+    console.error("Error getting employees:", error);
+    res
+      .status(500)
+      .json({ error: "حدث خطأ ما يرجى تحديث الصفحة واعادة المحاولة" });
+  }
+});
+// get users list
+router.get("/users", async (req, res) => {
+  try {
+    // Use Prisma Client to get all employees
+    const users = await prisma.user.findMany();
+    // Respond with the retrieved employees
+    res.status(200).json({ users });
+  } catch (error) {
+    console.error("Error getting employees:", error);
+    res
+      .status(500)
+      .json({ error: "حدث خطأ ما يرجى تحديث الصفحة واعادة المحاولة" });
   }
 });
 

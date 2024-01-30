@@ -1,45 +1,62 @@
-import React from "react";
+import React, { useEffect } from "react";
 import logo from "../assests/images/logo.png";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { IoHomeOutline, IoPeopleCircleOutline } from "react-icons/io5";
 import { BsPeople } from "react-icons/bs";
-import { FaChartPie } from "react-icons/fa";
+import { FaChartPie, FaUser } from "react-icons/fa";
 import { useAuth } from "../context/AuthContext";
+import { CiLogout, CiUser } from "react-icons/ci";
+import Spinner from "./Spinner";
 
 export default function NavBare() {
-  const { logout } = useAuth();
+  const { logout, loading, setLoading } = useAuth();
+  // const location = useLocation();
+  const location = useLocation().pathname;
+
+  useEffect(() => {
+    setLoading(true);
+    setTimeout(() => {
+      setLoading(false);
+    }, 1000);
+  }, [location]);
+  // get path name
+
   return (
-    <div className="navbar bg-base-100 ">
+    <div className="navbar bg-base-100 fixed w-[90%] filter drop-shadow-lg z-50 top-0 left-0 right-0 m-auto rounded-b-3xl">
       <div className="flex-1 gap-6 items-center">
+        {/* <Link to="/">
+          <img className="w-10" src={logo} alt="employee namagement" />
+        </Link> */}
         <div className="dropdown dropdown-bottom">
-          <div tabIndex={0} role="button" className="">
-            <div className="avatar mx-5">
-              <div className="w-10 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
-                <img src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
-              </div>
-            </div>
-          </div>
+          {/* <FaUser
+            className="text-2xl cursor-pointer m-5 "
+            tabIndex={0}
+            aria-label="Open user menu"
+          /> */}
+          {/* 
           <ul
+            dir="rtl"
             tabIndex={0}
             className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52"
-          >
-            <li>
-              <a>الضبط والاعدادات</a>
-            </li>
+          > */}
+          <ul className="menu menu-horizontal px-1 z-50">
             <li>
               <Link
                 onClick={() => {
                   logout();
                 }}
+                to={"/login"}
               >
-                تسجيل الخروج
+                <CiLogout /> تسجيل الخروج
+              </Link>
+            </li>
+            <li>
+              <Link to={"/account-parameters"}>
+                <CiUser /> اعدادت الحساب
               </Link>
             </li>
           </ul>
         </div>
-        <Link to="/">
-          <img className="w-14" src={logo} alt="employee namagement" />
-        </Link>
       </div>
       <div className="flex-none" dir="rtl">
         <ul className="menu menu-horizontal px-1 z-50">
@@ -48,9 +65,14 @@ export default function NavBare() {
               <IoHomeOutline /> الرئيسية
             </Link>
           </li>
+
           <li>
             <details>
-              <summary>
+              <summary
+                className={`
+                ${location === "/list" ? "bg-green-400" : ""}
+                `}
+              >
                 <BsPeople /> ادارة الموظفين
               </summary>
               <ul className="p-2 bg-base-100 rounded-t-none w-60">
@@ -65,28 +87,41 @@ export default function NavBare() {
           </li>
           <li>
             <details>
-              <summary>
+              <summary
+                className={`
+                ${
+                  location === "/users-list" || location === "/add-user"
+                    ? "bg-green-400"
+                    : ""
+                }
+                `}
+              >
                 <IoPeopleCircleOutline />
                 ادارة المستخدمين
               </summary>
               <ul className="p-2 bg-base-100 rounded-t-none w-60">
                 <li>
-                  <Link to="list">قائمة المستخدمين</Link>
+                  <Link to="/users-list">قائمة المستخدمين</Link>
                 </li>
                 <li>
-                  <Link to={"Add"}>اضافة مستخدم</Link>
+                  <Link to={"/add-user"}>اضافة مستخدم</Link>
                 </li>
               </ul>
             </details>
           </li>
-          <li>
-            <Link>
+          <li
+            className={`
+                ${location === "/statistics" ? "bg-green-400" : ""}
+                `}
+          >
+            <Link to={"/statistics"}>
               <FaChartPie />
               احصائيات
             </Link>
           </li>
         </ul>
       </div>
+      {loading && <Spinner />}
     </div>
   );
 }
