@@ -1,8 +1,31 @@
 import React from "react";
 import PageContainer from "../../components/PageContainer";
 import { toast } from "react-toastify";
+import { useLocation } from "react-router-dom";
 
-export default function AddUser() {
+export default function AddUser({ edit }) {
+  const [user, setUser] = React.useState({});
+  const location = useLocation();
+  const userId = location.pathname.split("/")[3];
+  console.log(userId);
+  const getDataToEdit = () => {
+    fetch(`${process.env.REACT_APP_SERVER_URL}/auth/users/${userId}`, {
+      headers: {
+        Authorization: `${localStorage.getItem("token")}`,
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+        setUser(data.user);
+      });
+  };
+  React.useEffect(() => {
+    if (edit) {
+      getDataToEdit();
+    }
+  }, []);
+
   const handleSubmit = (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
@@ -22,14 +45,19 @@ export default function AddUser() {
       return;
     }
 
-    fetch(`${process.env.REACT_APP_SERVER_URL}/auth/add-user`, {
-      method: "POST",
-      headers: {
-        Authorization: `${localStorage.getItem("token")}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    })
+    fetch(
+      `${process.env.REACT_APP_SERVER_URL}/auth/${
+        edit ? "edit-user/" + userId : "add-user"
+      }`,
+      {
+        method: "put",
+        headers: {
+          Authorization: `${localStorage.getItem("token")}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      }
+    )
       .then(
         (res) =>
           res.status === 201 &&
@@ -44,7 +72,7 @@ export default function AddUser() {
     <PageContainer>
       <div className="pt-32 flex flex-col items-center justify-center w-full">
         <h1 className="text-3xl font-bold border-b-2 border-green-400">
-          اضافة مستخدم
+          {edit ? "تعديل معلومات مستخدم" : "اضافة مستخدم"}
         </h1>
 
         <form onSubmit={handleSubmit} className="w-full max-w-lg mt-10 py-10">
@@ -62,6 +90,7 @@ export default function AddUser() {
                 type="text"
                 required
                 name="firstName"
+                value={edit && user.fullName?.split(" ")[0]}
               />
             </div>
             <div className="w-full md:w-1/2 px-3">
@@ -77,6 +106,7 @@ export default function AddUser() {
                 type="text"
                 required
                 name="lastName"
+                value={edit && user.fullName?.split(" ")[1]}
               />
             </div>
           </div>
@@ -94,6 +124,7 @@ export default function AddUser() {
                 type="email"
                 required
                 name="email"
+                value={edit && user.email}
               />
             </div>
           </div>
@@ -111,6 +142,7 @@ export default function AddUser() {
                 type="text"
                 required
                 name="phone"
+                value={edit && user.phone}
               />
             </div>
             <div className="w-full px-3 mb-6 md:mb-0">
@@ -125,6 +157,7 @@ export default function AddUser() {
                   className="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                   required
                   name="role"
+                  value={edit && user.role}
                 >
                   <option value={"user"}>مستخدم</option>
                   <option value={"admin"}>مدير</option>

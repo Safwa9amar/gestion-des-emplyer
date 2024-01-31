@@ -58,15 +58,24 @@ router.post("/login", async (req, res) => {
 });
 
 // update user
-router.put("/users/:id", async (req, res) => {
-  console.log(req.body);
+router.put("/edit-user/:id", async (req, res) => {
+  const { role, password, phone, firstName, email, lastName } = req.body;
+  // hash password
+  const hashedPassword = await bcrypt.hash(password, 10);
   try {
     // Use Prisma Client to get all employees
     const user = await prisma.user.update({
       where: {
         id: Number(req.params.id),
       },
-      data: req.body,
+      data: {
+        fullName: firstName + " " + lastName,
+        username: firstName + "_" + lastName,
+        role,
+        password: hashedPassword,
+        phone,
+        email,
+      },
     });
     // Respond with the retrieved employees
     res.status(200).json({ user });
@@ -91,5 +100,22 @@ router.get("/users", async (req, res) => {
       .json({ error: "حدث خطأ ما يرجى تحديث الصفحة واعادة المحاولة" });
   }
 });
-
+// get user by id
+router.get("/users/:id", async (req, res) => {
+  try {
+    // Use Prisma Client to get all employees
+    const user = await prisma.user.findUnique({
+      where: {
+        id: Number(req.params.id),
+      },
+    });
+    // Respond with the retrieved employees
+    res.status(200).json({ user });
+  } catch (error) {
+    console.error("Error getting employees:", error);
+    res
+      .status(500)
+      .json({ error: "حدث خطأ ما يرجى تحديث الصفحة واعادة المحاولة" });
+  }
+});
 module.exports = router;

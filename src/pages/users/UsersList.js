@@ -125,7 +125,7 @@ export default function UsersList() {
               name: "الخيارات",
               cell: (row) => (
                 <div className="flex flex-row gap-2">
-                  <Link to={`/Add?edit=${row.id}`}>
+                  <Link to={`/users/edit/${row.id}`} className="text-green-500">
                     <CiEdit className="text-blue-500 text-3xl" />{" "}
                   </Link>
                   <MdOutlineDeleteForever

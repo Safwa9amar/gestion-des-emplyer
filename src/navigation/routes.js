@@ -48,7 +48,7 @@ const routes = [
     element: <UsersList />,
   },
   {
-    path: "/edit-user/:id",
+    path: "/users/edit/:id",
     element: <AddUser edit={true} />,
   },
   {

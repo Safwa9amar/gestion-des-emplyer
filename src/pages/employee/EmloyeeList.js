@@ -133,7 +133,7 @@ export default function EmloyeeList() {
               name: "الخيارات",
               cell: (row) => (
                 <div className="flex flex-row gap-2">
-                  <Link to={`/Add?edit=${row.id}`}>
+                  <Link to={`/edit/${row.id}`}>
                     <CiEdit className="text-blue-500 text-3xl" />{" "}
                   </Link>
                   <MdOutlineDeleteForever
