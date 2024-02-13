@@ -22,7 +22,7 @@ export default function NavBare() {
   // get path name
 
   return (
-    <div className="navbar bg-base-100 fixed w-[90%] filter drop-shadow-lg z-50 top-0 left-0 right-0 m-auto rounded-b-3xl">
+    <div className="noprint navbar bg-base-100 fixed w-[90%] filter drop-shadow-lg z-50 top-0 left-0 right-0 m-auto rounded-b-3xl">
       <div className="flex-1 gap-6 items-center">
         {/* <Link to="/">
           <img className="w-10" src={logo} alt="employee namagement" />

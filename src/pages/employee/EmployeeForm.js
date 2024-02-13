@@ -8,13 +8,13 @@ import StepFour from "./formSteps/StepFour";
 import { FaRegSave } from "react-icons/fa";
 import { FcNext, FcPrevious } from "react-icons/fc";
 import { toast } from "react-toastify";
-import { useLocation } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import ImageUpload from "./formSteps/FinalStep";
 const EmployeeForm = ({ edit }) => {
   // chek if the form is for edit or add new employee
   const navigation = useLocation();
-  const EmployeeId = navigation.pathname.split("/")[2];
-  console.log(EmployeeId);
+  // const EmployeeId = navigation.pathname.split("/")[2];
+  const { id: EmployeeId } = useParams();
   const formRef = useRef(null);
 
   // const [edit, setEdit] = useState(false);
@@ -31,6 +31,13 @@ const EmployeeForm = ({ edit }) => {
             },
           }
         )
+          .then((res) => {
+            if (res.status === 401) {
+              navigation.pathname = "/login";
+              return;
+            }
+            return res;
+          })
           .then((res) => res.json())
           .then((data) => {
             console.log(data);
@@ -64,6 +71,7 @@ const EmployeeForm = ({ edit }) => {
               allowances: data.employee.allowances,
               deductions: data.employee.deductions,
             });
+            setProfileImg(data.employee.picture);
           });
       } catch (error) {
         console.log(error);
@@ -126,6 +134,8 @@ const EmployeeForm = ({ edit }) => {
       [e.target.name]: parseInt(e.target.value),
     });
   };
+  const [profileImg, setProfileImg] = useState(null);
+
   const [activeStep, setActiveStep] = useState(0);
   const steps = [
     {
@@ -177,13 +187,12 @@ const EmployeeForm = ({ edit }) => {
       component: (
         <ImageUpload
           setActiveStep={setActiveStep}
-          salaryInfo={salaryInfo}
-          handleSalaryInfoChange={handleSalaryInfoChange}
+          onImageSelect={setProfileImg}
+          profileImg={profileImg}
         />
       ),
     },
   ];
-  // console.log(process.env.REACT_APP_SERVER_URL);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -213,6 +222,25 @@ const EmployeeForm = ({ edit }) => {
             new Promise((resolve, reject) => {
               if (res.ok) {
                 resolve(data);
+                // send the image to the server
+                const formData = new FormData();
+                formData.append("image", profileImg);
+                formData.append("employeeId", EmployeeId);
+                fetch(`${process.env.REACT_APP_SERVER_URL}/api/upload`, {
+                  method: "POST",
+                  headers: {
+                    Authorization: `${localStorage.getItem("token")}`,
+                  },
+                  body: formData,
+                })
+                  .then(async (res) => {
+                    const data = await res.json();
+                    console.log(data);
+                  })
+                  .catch((err) => {
+                    console.log(err);
+                    toast.error(err.message);
+                  });
               } else {
                 reject(data);
               }

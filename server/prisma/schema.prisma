@@ -23,7 +23,7 @@ model Employee {
   birthDate     String
   hireDate      String
   maritalStatus String
-  // socialStatus  String
+  socialStatus  String  @default("")
   address       String
   jobTitle      String
   jobLevel      String
@@ -36,9 +36,10 @@ model Employee {
   childrenCount String
   department    String
   position      String
+  picture       String  @default("default.jpg")
 
   // Add other fields as needed
-
+  Payrolls Payroll[]
   // Add other fields as needed
 
   createdAt DateTime @default(now())
@@ -47,7 +48,20 @@ model Employee {
   // Relationships or additional configurations can be added here
 }
 
-// prisma/schema.prisma
+model Payroll {
+  id            Int    @id @default(autoincrement())
+  employeeId    Int
+  month         String
+  year          Int
+  basicSalary   Float // Add fields for basic salary
+  overtimeHours Int? // Add fields for overtime hours (optional)
+  bonuses       Float? // Add fields for bonuses (optional)
+  deductions    Float? // Add fields for deductions (optional)
+  netSalary     Float // Add field for net salary
+
+  // Define the foreign key relationship with the Employee model
+  employee Employee @relation(fields: [employeeId], references: [id])
+}
 
 model User {
   id       Int    @id @default(autoincrement())
@@ -59,3 +73,5 @@ model User {
   picture  String @default("profileHolder.jpg")
   role     String
 }
+
+// prisma/schema.prisma

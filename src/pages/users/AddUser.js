@@ -7,6 +7,8 @@ export default function AddUser({ edit }) {
   const [user, setUser] = React.useState({});
   const location = useLocation();
   const userId = location.pathname.split("/")[3];
+  // check if uid is not str
+  
   console.log(userId);
   const getDataToEdit = () => {
     fetch(`${process.env.REACT_APP_SERVER_URL}/auth/users/${userId}`, {

@@ -5,6 +5,7 @@ const authenticate = require("./middleware/authMiddleware");
 const jwt = require("jsonwebtoken");
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
+const path = require("path");
 
 const secretKey = process.env.SECRET_KEY;
 // const startExpressServer = () => {
@@ -19,9 +20,13 @@ app.use(
 // Middleware setup
 app.use(express.json()); // Example middleware for JSON parsing
 
+// Serve static files from the "uploads" folder
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+
 // Routes setup
-const apiRoutes = require("./routes/apiRoutes");
-app.use("/api", authenticate, apiRoutes);
+// api routes
+const apiRoutes = require("./routes/api/index");
+app.use(apiRoutes);
 
 //  Auth routes
 const authRoutes = require("./routes/authRoutes");

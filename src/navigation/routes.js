@@ -9,6 +9,7 @@ import AccountParameters from "../pages/AccountParameters";
 import AddUser from "../pages/users/AddUser";
 import UsersList from "../pages/users/UsersList";
 import Statics from "../pages/Statics";
+import Payroll from "../pages/employee/Payroll";
 
 const routes = [
   {
@@ -54,6 +55,10 @@ const routes = [
   {
     path: "/statistics",
     element: <Statics />,
+  },
+  {
+    path: "/payroll/:id",
+    element: <Payroll />,
   },
 ];
 

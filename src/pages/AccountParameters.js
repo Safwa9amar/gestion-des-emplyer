@@ -61,7 +61,7 @@ const AccountParameters = () => {
       <div className="flex flex-col items-center justify-center w-full">
         <h1 className="mt-20 text-3xl font-bold">اعدادت الحساب</h1>
         <div className="mt-10 flex justify-center gap-20 w-full">
-          <form className="" onSubmit={handleSubmit}>
+          <form className="w-1/2" onSubmit={handleSubmit}>
             <div className="form-control">
               <label className="label">
                 <span className="label-text">الاسم</span>
@@ -131,7 +131,7 @@ const AccountParameters = () => {
                 onChange={handleInputChange}
               />
             </div>
-            <div className="form-control mt-6 self-start">
+            <div className="form-control mt-6  self-start">
               <input
                 type="submit"
                 value="تحديث"
@@ -139,13 +139,6 @@ const AccountParameters = () => {
               />
             </div>
           </form>
-          {/* profile pic  */}
-          <div className="avatar">
-            <div className="w-60 rounded-lg ring ring-primary ring-offset-base-100 ring-offset-2">
-              <img src={profileHolder} />
-            </div>
-            <FaRegEdit className=" absolute bottom-0 right-0 text-4xl text-white rounded-full cursor-pointer" />
-          </div>
         </div>
       </div>
     </PageContainer>

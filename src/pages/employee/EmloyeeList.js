@@ -3,6 +3,8 @@ import PageContainer from "../../components/PageContainer";
 import DataTable from "react-data-table-component";
 import { MdOutlineDeleteForever } from "react-icons/md";
 import { CiEdit } from "react-icons/ci";
+import { RiBillLine } from "react-icons/ri";
+
 import { GrPowerReset } from "react-icons/gr";
 import { toast } from "react-toastify";
 import { Link } from "react-router-dom";
@@ -126,20 +128,27 @@ export default function EmloyeeList() {
               name: "المستوى الوظيفي",
               selector: (row) => row.jobLevel,
               sortable: true,
-              width: "15%",
+              // width: "15%",
             },
             // options
             {
               name: "الخيارات",
               cell: (row) => (
                 <div className="flex flex-row gap-2">
-                  <Link to={`/edit/${row.id}`}>
-                    <CiEdit className="text-blue-500 text-3xl" />{" "}
+                  <Link
+                    to={`/payroll/${row.id}`}
+                    className="hover:text-green-500"
+                  >
+                    <RiBillLine className="text-2xl" />
+                  </Link>
+                  <Link to={`/edit/${row.id}`} className="hover:text-blue-500">
+                    <CiEdit className="text-3xl" />{" "}
                   </Link>
                   <MdOutlineDeleteForever
                     onClick={() => handleDelete(row.id)}
-                    className="text-red-500 text-3xl"
+                    className="text-3xl text-red-500 cursor-pointer"
                   />
+                  {/* معلومات الدفع */}
                 </div>
               ),
             },
