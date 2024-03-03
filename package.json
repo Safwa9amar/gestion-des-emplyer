@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "main": "electron.js",
+  "homepage": "./",
   "description": "this is a electron app for managing employees",
   "author": "hamza hassani",
   "dependencies": {
@@ -31,11 +32,13 @@
   },
   "scripts": {
     "start": "concurrently \"npm run electron\" \"npm run start-server\" \"react-scripts start ",
-    "electron": "electron main.js",
+    "electron": "electron  main.js",
     "dev": "concurrently \"npm start\" \"npm run electron\"",
     "build": "react-scripts build && electron-builder",
+    "electron-build": "electron-builder",
     "start-server": "nodemon server/server.js",
-    "migrate": "prisma migrate dev"
+    "migrate": "prisma migrate dev",
+    "react": "react-scripts start"
   },
   "build": {
     "appId": "com.hamzahassani.gestion-de-emplyes",
@@ -44,15 +47,13 @@
       "output": "dist"
     },
     "files": [
-      "build/**/*",
-      "node_modules/**/*"
+     "server/**/*",
+     "build/**/*",
+     "node_modules/**/*",
+     "package.json"
+   
     ],
-    "extraFiles": [
-      {
-        "from": "main.js",
-        "to": "build/electron.js"
-      }
-    ],
+    
     "dmg": {
       "contents": [
         {

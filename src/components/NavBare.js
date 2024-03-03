@@ -7,7 +7,6 @@ import { FaChartPie, FaUser } from "react-icons/fa";
 import { useAuth } from "../context/AuthContext";
 import { CiLogout, CiUser } from "react-icons/ci";
 import Spinner from "./Spinner";
-
 export default function NavBare() {
   const { logout, loading, setLoading } = useAuth();
   // const location = useLocation();

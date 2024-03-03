@@ -3,6 +3,7 @@ const express = require("express");
 var cors = require("cors");
 const authenticate = require("./middleware/authMiddleware");
 const jwt = require("jsonwebtoken");
+// const { PrismaClient } = require("./prisma/@prisma/client");
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 const path = require("path");
@@ -13,7 +14,7 @@ const app = express();
 const port = 3001;
 app.use(
   cors({
-    origin: "http://localhost:3000",
+    origin: "*", // allow all origins
     // credentials: true,
   })
 );

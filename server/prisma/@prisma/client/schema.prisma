@@ -1,0 +1,78 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "@prisma/client"
+}
+
+datasource db {
+  // sqlite 
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// prisma/schema.prisma
+
+model Employee {
+  id            Int     @id @default(autoincrement())
+  firstName     String
+  lastName      String
+  email         String  @unique
+  phone         String  @unique
+  gender        String
+  birthDate     String
+  hireDate      String
+  maritalStatus String
+  socialStatus  String  @default("")
+  address       String
+  jobTitle      String
+  jobLevel      String
+  baseSalary    Float   @default(0)
+  basicSalary   Float   @default(0)
+  bonuses       Float   @default(0)
+  allowances    Float   @default(0)
+  deductions    Float   @default(0)
+  insurance     Boolean
+  childrenCount String
+  department    String
+  position      String
+  picture       String  @default("default.jpg")
+
+  // Add other fields as needed
+  Payrolls Payroll[]
+  // Add other fields as needed
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relationships or additional configurations can be added here
+}
+
+model Payroll {
+  id            Int    @id @default(autoincrement())
+  employeeId    Int
+  month         String
+  year          Int
+  basicSalary   Float // Add fields for basic salary
+  overtimeHours Int? // Add fields for overtime hours (optional)
+  bonuses       Float? // Add fields for bonuses (optional)
+  deductions    Float? // Add fields for deductions (optional)
+  netSalary     Float // Add field for net salary
+
+  // Define the foreign key relationship with the Employee model
+  employee Employee @relation(fields: [employeeId], references: [id])
+}
+
+model User {
+  id       Int    @id @default(autoincrement())
+  fullName String
+  username String @unique
+  password String
+  email    String @unique
+  phone    String @unique
+  picture  String @default("profileHolder.jpg")
+  role     String
+}
+
+// prisma/schema.prisma
